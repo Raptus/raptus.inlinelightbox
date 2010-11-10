@@ -58,11 +58,31 @@
       effect:           'fade',
       direction:        'left',
       effectSpeed:      200,
-      slideSpeed:        400,
+      slideSpeed:       400,
       fixedHeight:      false,
       fixedWidth:       false,
       initialHeight:    250,
-      initialWidth:     250
+      initialWidth:     250,
+      
+      // Callbacks
+      preStart: false,
+      postStart: false,
+      preSetInterface: false,
+      postSetInterface: false,
+      preSetImageToView: false,
+      postSetImageToView: false,
+      preResizeContainer: false,
+      postResizeContainer: false,
+      preShowImage: false,
+      postShowImage: false,
+      preShowImageData: false,
+      postShowImageData: false,
+      preSetNavigation: false,
+      postSetNavigation: false,
+      prePreloadNeighbor: false,
+      postPreloadNeighbor: false,
+      prePreloadNeighbor: false,
+      postPreloadNeighbor: false
     },settings);
     if(!this.length)
       return
@@ -83,6 +103,7 @@
      * @param object jQueryMatchedObj The jQuery object with all elements matched
      */
     function _start(objClicked, settings) {
+      _callback(settings, 'preStart', {'objClicked': objClicked});
       settings.started = true;
       var o = $(objClicked);
       var parent = o.parent();
@@ -122,6 +143,7 @@
       
       // Call the function that prepares image exibition
       _set_image_to_view(parent, settings);
+      _callback(settings, 'postStart', {'objClicked': objClicked});
     };
     /**
      * Create the jQuery lightBox plugin interface
@@ -156,6 +178,7 @@
     function _set_interface(objClicked, parent, settings) {
       // Apply the HTML markup into body tag
       if(!parent.find('.jquery-lightbox').length) {
+        _callback(settings, 'preSetInterface', {'parent': parent, 'objClicked': objClicked});
         var caption = settings.captionVisible ? '<span class="lightbox-image-details-caption"></span>' : '';
         var number = settings.txtVisible ? '<span class="lightbox-image-details-currentNumber"></span>' : '';
         var previmage = !settings.showLoading ? '<span class="lightbox-container-image-prev"><img class="lightbox-image-prev"></span>' : '';
@@ -168,6 +191,7 @@
           parent.find('.lightbox-container-image-box, .lightbox-container-image, .lightbox-container-image-data-box').width(settings.fixedWidth);
         if(!settings.showLoading)
           parent.find('.lightbox-container-image-prev').hide();
+        _callback(settings, 'postSetInterface', {'parent': parent, 'objClicked': objClicked});
       }
     }
     /**
@@ -175,6 +199,7 @@
      *
      */
     function _set_image_to_view(parent, settings) { // show the loading
+      _callback(settings, 'preSetImageToView', {'parent': parent});
       window.clearTimeout(settings.timer);
       // Show the loading
       if(settings.showLoading)
@@ -185,6 +210,7 @@
         if(settings.fixedHeight)
           parent.find('.lightbox-image-prev').css('top', (settings.fixedHeight-parent.find('.lightbox-image').height())/2);
         parent.find('.lightbox-image-prev').attr('src', parent.find('.lightbox-image').attr('src'));
+        parent.find('.lightbox-image-prev').show();
         parent.find('.lightbox-container-image-prev').height(settings.fixedHeight ? settings.fixedHeight : parent.find('.lightbox-image').height())
                                                      .width(settings.fixedWidth ? settings.fixedWidth : parent.find('.lightbox-image').width())
                                                      .show();
@@ -220,6 +246,7 @@
         __wait(this);
       };
       objImagePreloader.src = settings.imageArray[settings.activeImage][0];
+      _callback(settings, 'postSetImageToView', {'parent': parent});
     };
     /**
      * Perfomance an effect in the image container resizing it
@@ -227,6 +254,7 @@
      * @param integer intImageHeight The image´s height that will be showed
      */
     function _resize_container_image_box(parent,settings,intImageWidth,intImageHeight) {
+      _callback(settings, 'preResizeContainer', {'parent': parent, 'intImageWidth': intImageWidth, 'intImageHeight': intImageHeight});
       // Get current width and height
       var intCurrentWidth = parent.find('.lightbox-container-image-box').width();
       var intCurrentHeight = parent.find('.lightbox-container-image-box').height();
@@ -247,15 +275,17 @@
           settings.dummyTimer = window.setInterval(function() { jq('body').toggleClass('dummy'); }, 10);
       } else
         _show_image(parent, settings);
+      _callback(settings, 'postResizeContainer', {'parent': parent, 'intImageWidth': intImageWidth, 'intImageHeight': intImageHeight});
     };
     /**
      * Show the prepared image
      *
      */
     function _show_image(parent,settings) {
+      _callback(settings, 'preShowImage', {'parent': parent});
       if($.browser.msie) {
         if(settings.dummyTimer)
-          window.clearInterval(settings.dummyTimer);        
+          window.clearInterval(settings.dummyTimer);
         jq('body').toggleClass('dummy');
       }
       parent.find('.lightbox-loading').hide();
@@ -311,6 +341,7 @@
           img.css('left', (settings.fixedWidth-img.width())/2);
         if(settings.fixedHeight)
           img.css('top', (settings.fixedHeight-img.height())/2);
+        parent.find('.lightbox-image-prev').fadeOut(settings.effectSpeed);
         img.fadeIn(settings.effectSpeed, function() {
           _show_image_data(parent,settings);
           _set_navigation(parent,settings);
@@ -319,6 +350,7 @@
         });
       }
       _preload_neighbor_images(settings);
+      _callback(settings, 'postShowImage', {'parent': parent});
     };
     function __goto(event) {
       window.location = event.data.url;
@@ -328,6 +360,7 @@
      *
      */
     function _show_image_data(parent,settings) {
+      _callback(settings, 'preShowImageData', {'parent': parent});
       parent.find('.lightbox-image-details-caption').hide();
       if ( settings.imageArray[settings.activeImage][1] ) {
         parent.find('.lightbox-image-details-caption').html(settings.imageArray[settings.activeImage][1]).show();
@@ -341,18 +374,22 @@
         parent.find('.lightbox-container-image-data-box').css('display', 'block');
       }
       if(settings.playTimeout) {
-        settings.timer = window.setTimeout(function() {
+        settings.timer = window.setTimeout(function(args) {
+          parent = args[0];
+          settings = args[1];
           settings.activeImage++;
           settings.direction = 'left';
           _set_image_to_view(parent, settings);
-        }, settings.playTimeout);
+        }, settings.playTimeout, [parent, settings]);
       }
+      _callback(settings, 'postShowImageData', {'parent': parent});
     }
     /**
      * Display the button navigations
      *
      */
     function _set_navigation(parent,settings) {
+      _callback(settings, 'preSetNavigation', {'parent': parent});
       parent.find('.lightbox-nav').show();
 
       // Instead to define this configuration in CSS file, we define here. And it´s need to IE. Just.
@@ -437,12 +474,14 @@
           }
         }
       }
+      _callback(settings, 'postSetNavigation', {'parent': parent});
     }
     /**
      * Preload prev and next images being showed
      *
      */
     function _preload_neighbor_images(settings) {
+      _callback(settings, 'prePreloadNeighbor');
       if ( (settings.imageArray.length -1) > settings.activeImage ) {
         objNext = new Image();
         objNext.src = settings.imageArray[settings.activeImage + 1][0];
@@ -451,6 +490,17 @@
         objPrev = new Image();
         objPrev.src = settings.imageArray[settings.activeImage -1][0];
       }
+      _callback(settings, 'postPreloadNeighbor');
+    }
+    /**
+     * Handles callbacks
+     * 
+     */
+    function _callback(settings, name, params) {
+      if(!params) params = {};
+      params = $.extend({'name': name, 'settings': settings}, params);
+      if(settings[name])
+        settings[name](params);
     }
     /**
      * Stop the code execution from a escified time in milisecond
