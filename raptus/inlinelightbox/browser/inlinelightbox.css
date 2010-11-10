@@ -45,6 +45,7 @@
 .lightbox-container-image {
   overflow:hidden;
   position:relative;
+  text-align:left;
 }
 .lightbox-container-image-prev {
   display:none;
@@ -52,6 +53,7 @@
   top:0;
   left:0;
   overflow:hidden;
+  text-align:left;
 }
 .lightbox-nav {
   position: absolute;
