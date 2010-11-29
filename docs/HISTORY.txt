@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.0b4 (2010-11-29)
+------------------
+
+* Removed jQuery.proxy usage to preserve plone 3 compatibility
+
 1.0b3 (2010-11-10)
 ------------------
 

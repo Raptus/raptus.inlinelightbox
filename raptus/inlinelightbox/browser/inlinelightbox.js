@@ -374,11 +374,13 @@
         parent.find('.lightbox-container-image-data-box').css('display', 'block');
       }
       if(settings.playTimeout) {
-        settings.timer = window.setTimeout($.proxy(function() {
-          this.settings.activeImage++;
-          this.settings.direction = 'left';
-          _set_image_to_view(this.parent, this.settings);
-        }, {parent: parent, settings: settings}), settings.playTimeout);
+        settings.timer = window.setTimeout(function(args) {
+          parent = args[0];
+          settings = args[1];
+          settings.activeImage++;
+          settings.direction = 'left';
+          _set_image_to_view(parent, settings);
+        }, settings.playTimeout, [parent, settings]);
       }
       _callback(settings, 'postShowImageData', {'parent': parent});
     }
