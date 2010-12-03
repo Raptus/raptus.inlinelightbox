@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.0b5 (2010-12-3)
+------------------
+
+* Add new property to specified a element for binding the linkSelector
+
 1.0b4 (2010-11-29)
 ------------------
 

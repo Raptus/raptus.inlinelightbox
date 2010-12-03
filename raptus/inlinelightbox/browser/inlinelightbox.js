@@ -49,6 +49,7 @@
       
       // Link selector
       linkSelector:     '',
+      linkSetOn:        '.lightbox-nav', // the given link (linkSelector) will be set on this element
       
       autoStart:        true,
       playTimeout:      0,
@@ -290,11 +291,11 @@
       }
       parent.find('.lightbox-loading').hide();
       if(settings.imageArray[settings.activeImage][2]) {
-        parent.find('.lightbox-nav').bind('click', {url: settings.imageArray[settings.activeImage][2]}, __goto);
-        parent.find('.lightbox-nav').css('cursor', 'pointer');
+        parent.find(settings.linkSetOn).bind('click', {url: settings.imageArray[settings.activeImage][2]}, __goto);
+        parent.find(settings.linkSetOn).css('cursor', 'pointer');
       } else {
-        parent.find('.lightbox-nav').unbind('click', __goto);
-        parent.find('.lightbox-nav').css('cursor', 'default');
+        parent.find(settings.linkSetOn).unbind('click', __goto);
+        parent.find(settings.linkSetOn).css('cursor', 'default');
       }
       var img = parent.find('.lightbox-image');
       if(settings.effect == 'slide') {
