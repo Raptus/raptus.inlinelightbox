@@ -516,7 +516,7 @@
     // Return the jQuery object for chaining. The unbind method is used to avoid click conflict when the plugin is called more than once
     this.unbind('click').bind('click', {settings: settings}, _initialize);
     if((settings.autoStart || settings.playTimeout) && !settings.started)
-      $(this.get(0)).click();
+      $(this.get(settings.activeImage)).click();
     return this;
   };
 })(jQuery); // Call and execute the function immediately passing the jQuery object

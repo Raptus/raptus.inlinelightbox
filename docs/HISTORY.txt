@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.0b6 (2010-12-08)
+------------------
+
+* Added possibility to set starting image for auto starting lightboxes
+
 1.0b5 (2010-12-3)
 ------------------
 
