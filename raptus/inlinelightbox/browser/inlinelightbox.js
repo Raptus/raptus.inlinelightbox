@@ -375,13 +375,18 @@
         parent.find('.lightbox-container-image-data-box').css('display', 'block');
       }
       if(settings.playTimeout) {
-        settings.timer = window.setTimeout(function(args) {
-          parent = args[0];
-          settings = args[1];
-          settings.activeImage++;
+        window.clearTimeout(settings.timer);
+        settings.timer = window.setTimeout(function() {
+          if(settings.random && settings.imageArray.length > 2) {
+            do {
+              var next = Math.floor(Math.random()*settings.imageArray.length);
+            } while(next == settings.activeImage);
+            settings.activeImage = next;
+          } else
+            settings.activeImage++;
           settings.direction = 'left';
           _set_image_to_view(parent, settings);
-        }, settings.playTimeout, [parent, settings]);
+        }, settings.playTimeout);
       }
       _callback(settings, 'postShowImageData', {'parent': parent});
     }
