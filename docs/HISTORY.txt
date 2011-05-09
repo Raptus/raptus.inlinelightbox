@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.0b9 (2011-05-09)
+------------------
+
+* Center the image in fixedWidth and/or fixedHeight lightboxes also if only one is available
+
 1.0b8 (2011-05-09)
 ------------------
 

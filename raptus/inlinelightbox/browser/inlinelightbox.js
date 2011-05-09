@@ -319,7 +319,13 @@
           });
         }
       } else {
-        img.show();
+        $(img).loaded(function() {
+          if(settings.fixedWidth)
+            img.css('left', (settings.fixedWidth-img.width())/2);
+          if(settings.fixedHeight)
+            img.css('top', (settings.fixedHeight-img.height())/2);
+          img.show();
+        });
         _show_image_data(parent,settings);
         _set_navigation(parent,settings);
       }
