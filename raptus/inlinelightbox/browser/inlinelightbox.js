@@ -14,6 +14,16 @@
 
 // Offering a Custom Alias suport - More info: http://docs.jquery.com/Plugins/Authoring#Custom_Alias
 (function($) {
+  $.fn.loaded = function(callback){
+    var interval = window.setInterval($.proxy(function(){
+      for (i = 0; i < this.obj.length; i++) {
+        if (this.obj.eq(i).complete == false) 
+          return;
+        this.callback();
+        window.clearInterval(interval);
+      }
+    }, {obj: $(this), callback: callback}), 200);
+  }
   /**
    * $ is an alias to jQuery object
    *
@@ -298,60 +308,59 @@
         parent.find(settings.linkSetOn).css('cursor', 'default');
       }
       var img = parent.find('.lightbox-image');
-      if(settings.effect == 'slide') {
-        img.show();
-        if(settings.direction == 'right') {
-          img.css('left', '-'+(settings.fixedWidth ? settings.fixedWidth + (settings.fixedWidth-img.width())/2 : img.width()));
-          img.css('top', (settings.fixedHeight ? (settings.fixedHeight-img.height())/2 : 0));
-          img.animate({
-              left: settings.fixedWidth ? (settings.fixedWidth-img.width())/2 : '0'
-            }, settings.effectSpeed, 'swing',
-            function() {
-              _show_image_data(parent,settings);
-              _set_navigation(parent,settings);
+      if(settings.matchedObjects.length > 1){
+        if(settings.effect == 'slide') {
+          $(img).loaded(function() {
+            _slide(img, parent, settings)
           });
-          if(!settings.showLoading) {
-            parent.find('.lightbox-image-prev').animate({
-              left: (settings.fixedWidth ? settings.fixedWidth-(settings.fixedWidth-parent.find('.lightbox-image-prev').width())/2 : img.width())
-            }, settings.effectSpeed, 'swing', function() {
-              parent.find('.lightbox-container-image-prev').hide();
-              parent.find('.lightbox-image-prev').css('left', settings.fixedWidth ? (settings.fixedWidth-img.width())/2 : '0');
-            });
-          }
         } else {
-          img.css('left', (settings.fixedWidth ? settings.fixedWidth - (settings.fixedWidth-img.width())/2 : img.width()));
-          img.css('top', (settings.fixedHeight ? (settings.fixedHeight-img.height())/2 : 0));
-          img.animate({
-              left: settings.fixedWidth ? (settings.fixedWidth-img.width())/2 : '0'
-            }, settings.effectSpeed, 'swing',
-            function() {
-              _show_image_data(parent,settings);
-              _set_navigation(parent,settings);
+          $(img).loaded(function() {
+            _fade(img, parent, settings)
           });
-          if(!settings.showLoading) {
-            parent.find('.lightbox-image-prev').animate({
-              left: '-'+(settings.fixedWidth ? settings.fixedWidth-(settings.fixedWidth-parent.find('.lightbox-image-prev').width())/2 : img.width())
-            }, settings.effectSpeed, 'swing', function() {
-              parent.find('.lightbox-container-image-prev').hide();
-              parent.find('.lightbox-image-prev').css('left', settings.fixedWidth ? (settings.fixedWidth-img.width())/2 : '0');
-            });
-          }
         }
       } else {
-        if(settings.fixedWidth)
-          img.css('left', (settings.fixedWidth-img.width())/2);
-        if(settings.fixedHeight)
-          img.css('top', (settings.fixedHeight-img.height())/2);
-        parent.find('.lightbox-image-prev').fadeOut(settings.effectSpeed);
-        img.fadeIn(settings.effectSpeed, function() {
-          _show_image_data(parent,settings);
-          _set_navigation(parent,settings);
-          if(!settings.showLoading)
-            parent.find('.lightbox-container-image-prev').hide();
-        });
+        img.show();
+        _show_image_data(parent,settings);
+        _set_navigation(parent,settings);
       }
       _preload_neighbor_images(settings);
       _callback(settings, 'postShowImage', {'parent': parent});
+    };
+    
+    function _fade(img, parent, settings) {
+      if(!settings.showLoading)
+        parent.find('.lightbox-container-image-prev').stop().fadeOut(settings.effectSpeed, function() {
+          parent.find('.lightbox-container-image-prev').hide();
+        });
+      if(settings.fixedWidth)
+        img.css('left', (settings.fixedWidth-img.width())/2);
+      if(settings.fixedHeight)
+        img.css('top', (settings.fixedHeight-img.height())/2);
+      img.fadeIn(settings.effectSpeed, function() {
+        _show_image_data(parent,settings);
+        _set_navigation(parent,settings);
+      });
+    };
+    
+    function _slide(img, parent, settings) {
+      if(!settings.showLoading) {
+        parent.find('.lightbox-container-image-prev').stop().animate({
+          left: (settings.direction == 'right' ? 1 : -1)*(settings.fixedWidth ? settings.fixedWidth : img.width())
+        }, settings.effectSpeed, 'swing', function() {
+          parent.find('.lightbox-container-image-prev').hide();
+          parent.find('.lightbox-container-image-prev').css('left', 0);
+        });
+      }
+      img.show();
+      img.css('left', (settings.direction == 'right' ? -1 : 1)*(settings.fixedWidth ? settings.fixedWidth : img.width()));
+      img.css('top', (settings.fixedHeight ? (settings.fixedHeight-img.height())/2 : 0));
+      img.stop().animate({
+        left: settings.fixedWidth ? (settings.fixedWidth-img.width())/2 : 0
+        }, settings.effectSpeed, 'swing',
+        function() {
+          _show_image_data(parent,settings);
+          _set_navigation(parent,settings);
+      });
     };
     function __goto(event) {
       window.location = event.data.url;

@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.0b8 (2011-05-09)
+------------------
+
+* Fixed bug in FF 4.0 (image size calculation was wrong because the image was not loaded completely)
+
 1.0b7 (2010-12-08)
 ------------------
 
