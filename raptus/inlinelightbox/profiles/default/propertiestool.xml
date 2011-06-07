@@ -21,6 +21,7 @@
       imageSelector:    '',
       imageAttr:        'href',
       linkSelector:     '',
+      linkAttr:         'href',
       autoStart:        true,
       playTimeout:      0,
       showButtons:      true,
@@ -30,6 +31,8 @@
       effectSpeed:      200,
       fixedHeight:      false,
       fixedWidth:       false,
+      hAlign:           'center',
+      vAlign:           'center',
       initialHeight:    250,
       initialWidth:     250
     }</property>

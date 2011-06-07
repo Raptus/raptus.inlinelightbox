@@ -59,6 +59,7 @@
       
       // Link selector
       linkSelector:     '',
+      linkAttr:         'href',
       linkSetOn:        '.lightbox-nav', // the given link (linkSelector) will be set on this element
       
       autoStart:        true,
@@ -72,6 +73,8 @@
       slideSpeed:       400,
       fixedHeight:      false,
       fixedWidth:       false,
+      hAlign:           'center',
+      vAlign:           'center',
       initialHeight:    250,
       initialWidth:     250,
       
@@ -141,13 +144,13 @@
         if(settings.imageSelector)
           img = img.find(settings.imageSelector);
         if(settings.linkSelector)
-          link = $(settings.matchedObjects[i]).find(settings.linkSelector).attr('href');
+          link = $(settings.matchedObjects[i]).find(settings.linkSelector).attr(settings.linkAttr);
         settings.imageArray.push(new Array(img.attr(settings.imageAttr),caption,link));
       }
       var img = o;
       if(settings.imageSelector)
         img = img.find(settings.imageSelector);
-      while ( settings.imageArray[settings.activeImage][0] != img.attr('href') ) {
+      while ( settings.imageArray[settings.activeImage][0] != img.attr(settings.imageAttr) ) {
         settings.activeImage++;
       }
       settings.direction = settings.activeImage < cimg ? 'right' : 'left';
@@ -213,24 +216,26 @@
       _callback(settings, 'preSetImageToView', {'parent': parent});
       window.clearTimeout(settings.timer);
       // Show the loading
+      var img = parent.find('.lightbox-image');
       if(settings.showLoading)
         parent.find('.lightbox-loading').show();
       else {
+        parent.find('.lightbox-image-prev').hide();
+        parent.find('.lightbox-image-prev').attr('src', img.attr('src'));
         if(settings.fixedWidth)
-          parent.find('.lightbox-image-prev').css('left', (settings.fixedWidth-parent.find('.lightbox-image').width())/2);
+          parent.find('.lightbox-image-prev').css('left', settings.hAlign == 'right' ? settings.fixedWidth-img.width() : (settings.hAlign == 'left' ? 0 : (settings.fixedWidth-img.width())/2));
         if(settings.fixedHeight)
-          parent.find('.lightbox-image-prev').css('top', (settings.fixedHeight-parent.find('.lightbox-image').height())/2);
-        parent.find('.lightbox-image-prev').attr('src', parent.find('.lightbox-image').attr('src'));
+          parent.find('.lightbox-image-prev').css('top', settings.vAlign == 'bottom' ? settings.fixedHeight-img.height() : (settings.vAlign == 'top' ? 0 : (settings.fixedHeight-img.height())/2));
         parent.find('.lightbox-image-prev').show();
-        parent.find('.lightbox-container-image-prev').height(settings.fixedHeight ? settings.fixedHeight : parent.find('.lightbox-image').height())
-                                                     .width(settings.fixedWidth ? settings.fixedWidth : parent.find('.lightbox-image').width())
+        parent.find('.lightbox-container-image-prev').height(settings.fixedHeight ? settings.fixedHeight : img.height())
+                                                     .width(settings.fixedWidth ? settings.fixedWidth : img.width())
                                                      .show();
       }
       
       if(!settings.fixedNavigation)
         parent.find('.lightbox-nav,.lightbox-nav-btnPrev,.lightbox-nav-btnNext').hide();
         
-      parent.find('.lightbox-image').hide();
+      img.hide();
       if (parent.find('.lightbox-container-image-data-box').css('display') == 'block') {
         parent.find('.lightbox-container-image-data-box').slideUp(settings.slideSpeed);
         parent.find('.lightbox-container-image-data-box').css('display', 'none');
@@ -321,9 +326,9 @@
       } else {
         $(img).loaded(function() {
           if(settings.fixedWidth)
-            img.css('left', (settings.fixedWidth-img.width())/2);
+            img.css('left', settings.hAlign == 'right' ? settings.fixedWidth-img.width() : (settings.hAlign == 'left' ? 0 : (settings.fixedWidth-img.width())/2));
           if(settings.fixedHeight)
-            img.css('top', (settings.fixedHeight-img.height())/2);
+            img.css('top', settings.vAlign == 'bottom' ? settings.fixedHeight-img.height() : (settings.vAlign == 'top' ? 0 : (settings.fixedHeight-img.height())/2));
           img.show();
         });
         _show_image_data(parent,settings);
@@ -339,9 +344,9 @@
           parent.find('.lightbox-container-image-prev').hide();
         });
       if(settings.fixedWidth)
-        img.css('left', (settings.fixedWidth-img.width())/2);
+        img.css('left', settings.hAlign == 'right' ? settings.fixedWidth-img.width() : (settings.hAlign == 'left' ? 0 : (settings.fixedWidth-img.width())/2));
       if(settings.fixedHeight)
-        img.css('top', (settings.fixedHeight-img.height())/2);
+        img.css('top', settings.vAlign == 'bottom' ? settings.fixedHeight-img.height() : (settings.vAlign == 'top' ? 0 : (settings.fixedHeight-img.height())/2));
       img.fadeIn(settings.effectSpeed, function() {
         _show_image_data(parent,settings);
         _set_navigation(parent,settings);
@@ -359,9 +364,9 @@
       }
       img.show();
       img.css('left', (settings.direction == 'right' ? -1 : 1)*(settings.fixedWidth ? settings.fixedWidth : img.width()));
-      img.css('top', (settings.fixedHeight ? (settings.fixedHeight-img.height())/2 : 0));
+      img.css('top', (settings.fixedHeight ? (settings.vAlign == 'bottom' ? settings.fixedHeight-img.height() : (settings.vAlign == 'top' ? 0 : (settings.fixedHeight-img.height())/2)) : 0));
       img.stop().animate({
-        left: settings.fixedWidth ? (settings.fixedWidth-img.width())/2 : 0
+        left: settings.fixedWidth ? (settings.hAlign == 'right' ? settings.fixedWidth-img.width() : (settings.hAlign == 'left' ? 0 : (settings.fixedWidth-img.width())/2)) : 0
         }, settings.effectSpeed, 'swing',
         function() {
           _show_image_data(parent,settings);
