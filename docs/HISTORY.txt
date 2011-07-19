@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.0b11 (2011-07-19)
+-------------------
+
+* Fixed bug in IE (6-9) where the links defined by the linkSelector property where not accessible
+
 1.0b10 (2011-06-07)
 -------------------
 
