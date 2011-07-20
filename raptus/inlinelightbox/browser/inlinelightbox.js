@@ -14,15 +14,17 @@
 
 // Offering a Custom Alias suport - More info: http://docs.jquery.com/Plugins/Authoring#Custom_Alias
 (function($) {
-  $.fn.loaded = function(callback){
-    var interval = window.setInterval($.proxy(function(){
+  $.fn.loaded = function(callback) {
+    if($(this).data('interval'))
+      window.clearInterval($(this).data('interval'));
+    $(this).data('interval', window.setInterval($.proxy(function(){
       for (i = 0; i < this.obj.length; i++) {
         if (this.obj.eq(i).complete == false) 
           return;
         this.callback();
-        window.clearInterval(interval);
+        window.clearInterval(this.obj.data('interval'));
       }
-    }, {obj: $(this), callback: callback}), 200);
+    }, {obj: $(this), callback: callback}), 50));
   }
   /**
    * $ is an alias to jQuery object
@@ -221,24 +223,30 @@
         parent.find('.lightbox-loading').show();
       else {
         parent.find('.lightbox-image-prev').hide();
-        parent.find('.lightbox-image-prev').attr('src', img.attr('src'));
         if(settings.fixedWidth)
           parent.find('.lightbox-image-prev').css('left', settings.hAlign == 'right' ? settings.fixedWidth-img.width() : (settings.hAlign == 'left' ? 0 : (settings.fixedWidth-img.width())/2));
         if(settings.fixedHeight)
           parent.find('.lightbox-image-prev').css('top', settings.vAlign == 'bottom' ? settings.fixedHeight-img.height() : (settings.vAlign == 'top' ? 0 : (settings.fixedHeight-img.height())/2));
-        parent.find('.lightbox-image-prev').show();
         parent.find('.lightbox-container-image-prev').height(settings.fixedHeight ? settings.fixedHeight : img.height())
                                                      .width(settings.fixedWidth ? settings.fixedWidth : img.width())
-                                                     .show();
+        if(img.attr('src')) {
+          parent.find('.lightbox-image-prev').loaded($.proxy(function() {
+            this.parent.find('.lightbox-image').hide();
+            this.parent.find('.lightbox-image-prev').show();
+            this.parent.find('.lightbox-container-image-prev').show();
+          }, {settings: settings, parent: parent}));
+          parent.find('.lightbox-image-prev').attr('src', img.attr('src'));
+        } else
+          parent.find('.lightbox-container-image-prev').show();
       }
       
       if(!settings.fixedNavigation)
         parent.find('.lightbox-nav,.lightbox-nav-btnPrev,.lightbox-nav-btnNext').hide();
         
-      img.hide();
-      if (parent.find('.lightbox-container-image-data-box').css('display') == 'block') {
-        parent.find('.lightbox-container-image-data-box').slideUp(settings.slideSpeed);
-        parent.find('.lightbox-container-image-data-box').css('display', 'none');
+      if(parent.find('.lightbox-container-image-data-box').css('display') == 'block') {
+        parent.find('.lightbox-container-image-data-box').slideUp(settings.slideSpeed, function() {
+          $(this).hide();
+        });
       }
       // Image preload process
       if(settings.activeImage < 0)
@@ -250,7 +258,8 @@
       objImagePreloader.parent = parent;
       objImagePreloader.onload = function() {
         function __wait(objImagePreloader) {
-          if(objImagePreloader.parent.find('.lightbox-container-image-data-box').css('display') == 'none') {
+          if((objImagePreloader.settings.showLoading || objImagePreloader.parent.find('.lightbox-container-image-prev').css('display') != 'none') &&
+             objImagePreloader.parent.find('.lightbox-container-image-data-box').css('display') == 'none') {
             objImagePreloader.parent.find('.lightbox-image').attr('src',objImagePreloader.settings.imageArray[objImagePreloader.settings.activeImage][0]);
             // Perfomance an effect in the image container resizing it
             _resize_container_image_box(objImagePreloader.parent,settings,objImagePreloader.width,objImagePreloader.height);
