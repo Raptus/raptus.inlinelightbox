@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.0b13 (2011-07-21)
+-------------------
+
+* Fixed lightbox initilization (jQuery attribute selector did no longer work)
+* Fixed lightbox if showLoading was set to true (hide previous image while loading the next one)
+
 1.0b12 (2011-07-20)
 -------------------
 

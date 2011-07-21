@@ -219,9 +219,10 @@
       window.clearTimeout(settings.timer);
       // Show the loading
       var img = parent.find('.lightbox-image');
-      if(settings.showLoading)
+      if(settings.showLoading) {
+        img.hide();
         parent.find('.lightbox-loading').show();
-      else {
+      } else {
         parent.find('.lightbox-image-prev').hide();
         if(settings.fixedWidth)
           parent.find('.lightbox-image-prev').css('left', settings.hAlign == 'right' ? settings.fixedWidth-img.width() : (settings.hAlign == 'left' ? 0 : (settings.fixedWidth-img.width())/2));
