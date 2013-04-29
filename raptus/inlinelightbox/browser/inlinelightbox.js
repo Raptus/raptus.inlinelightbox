@@ -79,6 +79,7 @@
       vAlign:           'center',
       initialHeight:    250,
       initialWidth:     250,
+      responsive:       false,
       
       // Callbacks
       preStart: false,
@@ -198,13 +199,24 @@
         var caption = settings.captionVisible ? '<span class="lightbox-image-details-caption"></span>' : '';
         var number = settings.txtVisible ? '<span class="lightbox-image-details-currentNumber"></span>' : '';
         var previmage = !settings.showLoading ? '<span class="lightbox-container-image-prev"><img class="lightbox-image-prev"></span>' : '';
-        parent.prepend('<div id="'+$(objClicked).attr('rel')+'" class="jquery-lightbox"><div class="lightbox-container-image-box">'+previmage+'<div class="lightbox-container-image"><img class="lightbox-image"><div style="" class="lightbox-nav"><a href="#" class="lightbox-nav-btnPrev"></a><a href="#" class="lightbox-nav-btnNext"></a></div><div class="lightbox-loading"><a href="#" class="lightbox-loading-link"><img src="' + settings.imageLoading + '"></a></div></div></div><div class="lightbox-container-image-data-box"><div class="lightbox-container-image-data"><div class="lightbox-image-details">'+caption+''+number+'</div></div></div></div>'); 
+        var loading = settings.showLoading ? '<div class="lightbox-loading"><a href="#" class="lightbox-loading-link"><img src="' + settings.imageLoading + '"></a></div>' : '';
+        parent.prepend('<div id="'+$(objClicked).attr('rel')+'" class="jquery-lightbox"><div class="lightbox-container-image-box">'+previmage+'<div class="lightbox-container-image"><img class="lightbox-image"><div style="" class="lightbox-nav"><a href="#" class="lightbox-nav-btnPrev"></a><a href="#" class="lightbox-nav-btnNext"></a></div>' + loading + '</div></div><div class="lightbox-container-image-data-box"><div class="lightbox-container-image-data"><div class="lightbox-image-details">'+caption+''+number+'</div></div></div></div>'); 
         parent.find('.lightbox-container-image-data-box').css('padding', '0 '+settings.containerBorderSize+'px 0').hide();
         parent.find('.lightbox-container-image-box').width(settings.initialWidth).height(settings.initialHeight).css('padding', settings.containerBorderSize+'px');
         if(settings.fixedHeight)
           parent.find('.lightbox-container-image-box, .lightbox-container-image, .lightbox-nav-btnPrev,.lightbox-nav-btnNext').height(settings.fixedHeight);
         if(settings.fixedWidth)
           parent.find('.lightbox-container-image-box, .lightbox-container-image, .lightbox-container-image-data-box').width(settings.fixedWidth);
+        if(settings.responsive) {
+          parent.find('.lightbox-image, .lightbox-image-prev').css('max-width', '100%');
+          parent.find('.lightbox-container-image-box, .lightbox-container-image, .lightbox-container-image-data-box').width('100%');
+          $(window).resize(function() {
+            if(settings.cIntImageWidth) {
+              parent.find('.lightbox-container-image-prev, .lightbox-container-image, .lightbox-container-image-box').stop();
+              _resize_container_image_box(parent, settings, settings.cIntImageWidth, settings.cIntImageHeight);
+            }
+          });
+        }
         if(!settings.showLoading)
           parent.find('.lightbox-container-image-prev').hide();
         _callback(settings, 'postSetInterface', {'parent': parent, 'objClicked': objClicked});
@@ -224,12 +236,15 @@
         parent.find('.lightbox-loading').show();
       } else {
         parent.find('.lightbox-image-prev').hide();
-        if(settings.fixedWidth)
-          parent.find('.lightbox-image-prev').css('left', settings.hAlign == 'right' ? settings.fixedWidth-img.width() : (settings.hAlign == 'left' ? 0 : (settings.fixedWidth-img.width())/2));
+        var width = settings.fixedWidth;
+        if(settings.responsive)
+          width = parent.width();
+        if(width)
+          parent.find('.lightbox-image-prev').css('left', settings.hAlign == 'right' ? width-img.width() : (settings.hAlign == 'left' ? 0 : (width-img.width())/2));
         if(settings.fixedHeight)
           parent.find('.lightbox-image-prev').css('top', settings.vAlign == 'bottom' ? settings.fixedHeight-img.height() : (settings.vAlign == 'top' ? 0 : (settings.fixedHeight-img.height())/2));
         parent.find('.lightbox-container-image-prev').height(settings.fixedHeight ? settings.fixedHeight : img.height())
-                                                     .width(settings.fixedWidth ? settings.fixedWidth : img.width())
+                                                     .width(width ? width : img.width())
         if(img.attr('src')) {
           parent.find('.lightbox-image-prev').loaded($.proxy(function() {
             this.parent.find('.lightbox-image').hide();
@@ -281,6 +296,15 @@
      */
     function _resize_container_image_box(parent,settings,intImageWidth,intImageHeight) {
       _callback(settings, 'preResizeContainer', {'parent': parent, 'intImageWidth': intImageWidth, 'intImageHeight': intImageHeight});
+      var containerWidth = parent.width();
+      if(settings.responsive) {
+        settings.cIntImageHeight = intImageHeight;
+        settings.cIntImageWidth = intImageWidth;
+        if(intImageWidth > containerWidth) {
+          intImageHeight *= containerWidth / intImageWidth;
+          intImageWidth = containerWidth;
+        }
+      }
       // Get current width and height
       var intCurrentWidth = parent.find('.lightbox-container-image-box').width();
       var intCurrentHeight = parent.find('.lightbox-container-image-box').height();
@@ -291,8 +315,8 @@
         parent.find('.lightbox-nav-btnPrev,.lightbox-nav-btnNext').css({ height: intImageHeight });
       }
       if(!settings.fixedWidth) {
-        animation.width = intImageWidth;
-        parent.find('.lightbox-container-image-data-box').css({ width: intImageWidth });
+        animation.width = settings.responsive ? '100%' : intImageWidth;
+        parent.find('.lightbox-container-image-data-box').css({ width: settings.responsive ? '100%' : intImageWidth });
       }
       if(animation.width || animation.height) {
         parent.find('.lightbox-container-image-prev, .lightbox-container-image').animate(animation, settings.containerResizeSpeed);
@@ -335,8 +359,11 @@
         }
       } else {
         $(img).loaded(function() {
-          if(settings.fixedWidth)
-            img.css('left', settings.hAlign == 'right' ? settings.fixedWidth-img.width() : (settings.hAlign == 'left' ? 0 : (settings.fixedWidth-img.width())/2));
+          var width = settings.fixedWidth;
+          if(settings.responsive)
+            width = parent.width();
+          if(width)
+            img.css('left', settings.hAlign == 'right' ? width-img.width() : (settings.hAlign == 'left' ? 0 : (width-img.width())/2));
           if(settings.fixedHeight)
             img.css('top', settings.vAlign == 'bottom' ? settings.fixedHeight-img.height() : (settings.vAlign == 'top' ? 0 : (settings.fixedHeight-img.height())/2));
           img.show();
@@ -353,8 +380,11 @@
         parent.find('.lightbox-container-image-prev').stop().fadeOut(settings.effectSpeed, function() {
           parent.find('.lightbox-container-image-prev').hide();
         });
-      if(settings.fixedWidth)
-        img.css('left', settings.hAlign == 'right' ? settings.fixedWidth-img.width() : (settings.hAlign == 'left' ? 0 : (settings.fixedWidth-img.width())/2));
+      var width = settings.fixedWidth;
+      if(settings.responsive)
+        width = parent.width();
+      if(width)
+        img.css('left', settings.hAlign == 'right' ? width-img.width() : (settings.hAlign == 'left' ? 0 : (width-img.width())/2));
       if(settings.fixedHeight)
         img.css('top', settings.vAlign == 'bottom' ? settings.fixedHeight-img.height() : (settings.vAlign == 'top' ? 0 : (settings.fixedHeight-img.height())/2));
       img.fadeIn(settings.effectSpeed, function() {
@@ -375,8 +405,11 @@
       img.show();
       img.css('left', (settings.direction == 'right' ? -1 : 1)*(settings.fixedWidth ? settings.fixedWidth : img.width()));
       img.css('top', (settings.fixedHeight ? (settings.vAlign == 'bottom' ? settings.fixedHeight-img.height() : (settings.vAlign == 'top' ? 0 : (settings.fixedHeight-img.height())/2)) : 0));
+      var width = settings.fixedWidth;
+      if(settings.responsive)
+        width = parent.width();
       img.stop().animate({
-        left: settings.fixedWidth ? (settings.hAlign == 'right' ? settings.fixedWidth-img.width() : (settings.hAlign == 'left' ? 0 : (settings.fixedWidth-img.width())/2)) : 0
+        left: width ? (settings.hAlign == 'right' ? width-img.width() : (settings.hAlign == 'left' ? 0 : (width-img.width())/2)) : 0
         }, settings.effectSpeed, 'swing',
         function() {
           _show_image_data(parent,settings);
@@ -551,7 +584,7 @@
     // Return the jQuery object for chaining. The unbind method is used to avoid click conflict when the plugin is called more than once
     this.unbind('click').bind('click', {settings: settings}, _initialize);
     if((settings.autoStart || settings.playTimeout) && !settings.started)
-      $(this.get(settings.activeImage)).click();
+      $(this.get(settings.activeImage)).trigger('click');
     return this;
   };
 })(jQuery); // Call and execute the function immediately passing the jQuery object

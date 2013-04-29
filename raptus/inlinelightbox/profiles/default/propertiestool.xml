@@ -34,7 +34,8 @@
       hAlign:           'center',
       vAlign:           'center',
       initialHeight:    250,
-      initialWidth:     250
+      initialWidth:     250,
+      responsive:       false
     }</property>
  </object>
 </object>

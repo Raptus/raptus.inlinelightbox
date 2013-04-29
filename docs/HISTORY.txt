@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.0b14 (unreleased)
+-------------------
+
+* Added new configuration option (responsive) to make it possible to use
+  the lightbox in a container having a flexible width
+
 1.0b13 (2011-07-21)
 -------------------
 
