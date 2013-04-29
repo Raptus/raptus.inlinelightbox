@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0b14 (unreleased)
+1.0b14 (2013-04-29)
 -------------------
 
 * Added new configuration option (responsive) to make it possible to use
