@@ -4,8 +4,7 @@ Changelog
 1.0b15 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+* Added touch support
 
 1.0b14 (2013-04-29)
 -------------------

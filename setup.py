@@ -24,6 +24,7 @@ setup(name='raptus.inlinelightbox',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'raptus.touchswipe',
           # -*- Extra requirements: -*-
       ],
       entry_points="""

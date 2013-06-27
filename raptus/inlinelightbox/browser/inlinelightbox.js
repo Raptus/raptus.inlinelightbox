@@ -14,6 +14,8 @@
 
 // Offering a Custom Alias suport - More info: http://docs.jquery.com/Plugins/Authoring#Custom_Alias
 (function($) {
+  var touch = !!('ontouchstart' in window) || !!('onmsgesturechange' in window);
+
   $.fn.loaded = function(callback) {
     if($(this).data('interval'))
       window.clearInterval($(this).data('interval'));
@@ -219,6 +221,15 @@
         }
         if(!settings.showLoading)
           parent.find('.lightbox-container-image-prev').hide();
+        if(touch)
+          parent.swipe({
+            swipeLeft: function(e) {
+              parent.find('.lightbox-nav-btnNext').trigger('click');
+            },
+            swipeRight: function(e) {
+              parent.find('.lightbox-nav-btnPrev').trigger('click');
+            }
+          });
         _callback(settings, 'postSetInterface', {'parent': parent, 'objClicked': objClicked});
       }
     }

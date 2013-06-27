@@ -4,6 +4,8 @@
     xmlns:cmf="http://namespaces.zope.org/cmf"
     i18n_domain="raptus.inlinelightbox">
 
+    <include package="raptus.touchswipe" />
+
     <!-- Include the sub-packages that use their own configure.zcml files. -->
     <include package=".browser" />
 
