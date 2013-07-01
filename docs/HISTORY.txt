@@ -4,6 +4,8 @@ Changelog
 1.0b15 (unreleased)
 -------------------
 
+* Adjusted javascript initialization to work with the new component selection functionality
+  introduced in raptus.article.core 2.0b13
 * Added touch support
 
 1.0b14 (2013-04-29)
