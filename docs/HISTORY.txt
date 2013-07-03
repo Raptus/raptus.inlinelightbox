@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0b16 (unreleased)
+1.0b16 (2013-07-03)
 -------------------
 
 * Backwards compatibility for jQuery < 1.7

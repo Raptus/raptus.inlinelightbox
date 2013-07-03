@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.0b16.dev0'
+version = '1.0b16'
 
 setup(name='raptus.inlinelightbox',
       version=version,
