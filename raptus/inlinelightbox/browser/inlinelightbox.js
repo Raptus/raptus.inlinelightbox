@@ -21,7 +21,7 @@
       window.clearInterval($(this).data('interval'));
     $(this).data('interval', window.setInterval($.proxy(function(){
       for (i = 0; i < this.obj.length; i++) {
-        if (this.obj.eq(i).complete == false) 
+        if (this.obj.eq(i).complete == false)
           return;
         this.callback();
         window.clearInterval(this.obj.data('interval'));
@@ -39,8 +39,8 @@
       fixedNavigation:    false,    // (boolean) Boolean that informs if the navigation (next and prev button) will be fixed or not in the interface.
       // Configuration related to images
       imageLoading:     '++resource++inlinelightbox-loading.gif',    // (string) Path and the name of the loading icon
-      imageBtnPrev:     '++resource++inlinelightbox-prev.gif',     // (string) Path and the name of the prev button image
-      imageBtnNext:     '++resource++inlinelightbox-next.gif',     // (string) Path and the name of the next button image
+      imageBtnPrev:     '++resource++inlinelightbox-prev.png',     // (string) Path and the name of the prev button image
+      imageBtnNext:     '++resource++inlinelightbox-next.png',     // (string) Path and the name of the next button image
       imageBlank:       '++resource++inlinelightbox-blank.gif',      // (string) Path and the name of a blank image (one pixel)
       // Configuration related to container image box
       containerBorderSize:  10,     // (integer) If you adjust the padding in the CSS for the container, #lightbox-container-image-box, you will need to update this value
@@ -60,12 +60,12 @@
       // Image selector
       imageSelector:    '',
       imageAttr:        'href',
-      
+
       // Link selector
       linkSelector:     '',
       linkAttr:         'href',
       linkSetOn:        '.lightbox-nav', // the given link (linkSelector) will be set on this element
-      
+
       autoStart:        true,
       playTimeout:      0,
       showButtons:      true,
@@ -82,7 +82,7 @@
       initialHeight:    250,
       initialWidth:     250,
       responsive:       false,
-      
+
       // Callbacks
       preStart: false,
       postStart: false,
@@ -135,7 +135,7 @@
       // Unset image active information
       var cimg = settings.activeImage;
       settings.activeImage = 0;
-      // Add an Array (as many as we have), with href and title atributes, inside the Array that storage the images references    
+      // Add an Array (as many as we have), with href and title atributes, inside the Array that storage the images references
       for ( var i = 0; i < settings.matchedObjects.length; i++ ) {
         var a = $(settings.matchedObjects[i]);
         var img = a;
@@ -159,7 +159,7 @@
         settings.activeImage++;
       }
       settings.direction = settings.activeImage < cimg ? 'right' : 'left';
-      
+
       // Call the function that prepares image exibition
       _set_image_to_view(parent, settings);
       _callback(settings, 'postStart', {'objClicked': objClicked});
@@ -202,7 +202,7 @@
         var number = settings.txtVisible ? '<span class="lightbox-image-details-currentNumber"></span>' : '';
         var previmage = !settings.showLoading ? '<span class="lightbox-container-image-prev"><img class="lightbox-image-prev"></span>' : '';
         var loading = settings.showLoading ? '<div class="lightbox-loading"><a href="#" class="lightbox-loading-link"><img src="' + settings.imageLoading + '"></a></div>' : '';
-        parent.prepend('<div id="'+$(objClicked).attr('rel')+'" class="jquery-lightbox"><div class="lightbox-container-image-box">'+previmage+'<div class="lightbox-container-image"><img class="lightbox-image"><div style="" class="lightbox-nav"><a href="#" class="lightbox-nav-btnPrev"></a><a href="#" class="lightbox-nav-btnNext"></a></div>' + loading + '</div></div><div class="lightbox-container-image-data-box"><div class="lightbox-container-image-data"><div class="lightbox-image-details">'+caption+''+number+'</div></div></div></div>'); 
+        parent.prepend('<div id="'+$(objClicked).attr('rel')+'" class="jquery-lightbox"><div class="lightbox-container-image-box">'+previmage+'<div class="lightbox-container-image"><img class="lightbox-image"><div style="" class="lightbox-nav"><a href="#" class="lightbox-nav-btnPrev"></a><a href="#" class="lightbox-nav-btnNext"></a></div>' + loading + '</div></div><div class="lightbox-container-image-data-box"><div class="lightbox-container-image-data"><div class="lightbox-image-details">'+caption+''+number+'</div></div></div></div>');
         parent.find('.lightbox-container-image-data-box').css('padding', '0 '+settings.containerBorderSize+'px 0').hide();
         parent.find('.lightbox-container-image-box').width(settings.initialWidth).height(settings.initialHeight).css('padding', settings.containerBorderSize+'px');
         if(settings.fixedHeight)
@@ -266,10 +266,10 @@
         } else
           parent.find('.lightbox-container-image-prev').show();
       }
-      
+
       if(!settings.fixedNavigation)
         parent.find('.lightbox-nav,.lightbox-nav-btnPrev,.lightbox-nav-btnNext').hide();
-        
+
       if(parent.find('.lightbox-container-image-data-box').css('display') == 'block') {
         parent.find('.lightbox-container-image-data-box').slideUp(settings.slideSpeed, function() {
           $(this).hide();
@@ -385,7 +385,7 @@
       _preload_neighbor_images(settings);
       _callback(settings, 'postShowImage', {'parent': parent});
     };
-    
+
     function _fade(img, parent, settings) {
       if(!settings.showLoading)
         parent.find('.lightbox-container-image-prev').stop().fadeOut(settings.effectSpeed, function() {
@@ -403,7 +403,7 @@
         _set_navigation(parent,settings);
       });
     };
-    
+
     function _slide(img, parent, settings) {
       if(!settings.showLoading) {
         parent.find('.lightbox-container-image-prev').stop().animate({
@@ -474,12 +474,12 @@
 
       // Instead to define this configuration in CSS file, we define here. And it´s need to IE. Just.
       parent.find('.lightbox-nav-btnPrev,#lightbox-nav-btnNext').css({ 'background' : 'transparent url(' + settings.imageBlank + ') no-repeat' });
-      
+
       if(settings.showButtons) {
         // Show the prev button, if not the first image in set
         if ( settings.activeImage != 0 || (settings.allowRoundtrip && settings.imageArray.length > 1) ) {
           if ( settings.fixedNavigation ) {
-            parent.find('.lightbox-nav-btnPrev').css({ 'background' : 'url(' + settings.imageBtnPrev + ') left 25% no-repeat' })
+            parent.find('.lightbox-nav-btnPrev').css({ 'background' : 'url(' + settings.imageBtnPrev + ') 10% 50% no-repeat' })
               .unbind()
               .bind('click', {settings: settings}, function(event) {
                 event.stopPropagation();
@@ -496,7 +496,7 @@
           } else {
             // Show the images button for Next buttons
             parent.find('.lightbox-nav-btnPrev').unbind().hover(function() {
-              $(this).css({ 'background' : 'url(' + settings.imageBtnPrev + ') left 25% no-repeat' });
+              $(this).css({ 'background' : 'url(' + settings.imageBtnPrev + ') 10% 50% no-repeat' });
             },function() {
               $(this).css({ 'background' : 'transparent url(' + settings.imageBlank + ') no-repeat' });
             }).css({ 'background' : 'transparent url(' + settings.imageBlank + ') no-repeat' })
@@ -514,11 +514,11 @@
             });
           }
         }
-        
+
         // Show the next button, if not the last image in set
         if ( settings.activeImage != ( settings.imageArray.length -1 ) || (settings.allowRoundtrip && settings.imageArray.length > 1) ) {
           if ( settings.fixedNavigation ) {
-            parent.find('.lightbox-nav-btnNext').css({ 'background' : 'url(' + settings.imageBtnNext + ') right 25% no-repeat' })
+            parent.find('.lightbox-nav-btnNext').css({ 'background' : 'url(' + settings.imageBtnNext + ') 90% 50% no-repeat' })
               .unbind()
               .bind('click', {settings: settings}, function(event) {
                 event.stopPropagation();
@@ -529,13 +529,13 @@
                   parent = parent.parent();
                 settings = event.data.settings;
                 settings.activeImage = settings.activeImage + 1;
-                settings.direction = 'left';
+                settings.direction = '10%';
                 _set_image_to_view(parent.parent(), settings);
               });
           } else {
             // Show the images button for Next buttons
             parent.find('.lightbox-nav-btnNext').unbind().hover(function() {
-              $(this).css({ 'background' : 'url(' + settings.imageBtnNext + ') right 25% no-repeat' });
+              $(this).css({ 'background' : 'url(' + settings.imageBtnNext + ') 90% 50% no-repeat' });
             },function() {
               $(this).css({ 'background' : 'transparent url(' + settings.imageBlank + ') no-repeat' });
             }).css({ 'background' : 'transparent url(' + settings.imageBlank + ') no-repeat' })
@@ -574,7 +574,7 @@
     }
     /**
      * Handles callbacks
-     * 
+     *
      */
     function _callback(settings, name, params) {
       if(!params) params = {};
@@ -587,7 +587,7 @@
      *
      */
     function ___pause(ms) {
-      var date = new Date(); 
+      var date = new Date();
       curDate = null;
       do { var curDate = new Date(); }
       while ( curDate - date < ms);

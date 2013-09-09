@@ -4,8 +4,8 @@
    <property name="standard" type="string" purge="False">{
       fixedNavigation:  false,
       imageLoading:     '++resource++inlinelightbox-loading.gif',
-      imageBtnPrev:     '++resource++inlinelightbox-prev.gif',
-      imageBtnNext:     '++resource++inlinelightbox-next.gif',
+      imageBtnPrev:     '++resource++inlinelightbox-prev.png',
+      imageBtnNext:     '++resource++inlinelightbox-next.png',
       imageBlank:       '++resource++inlinelightbox-blank.gif',
       containerBorderSize:  10,
       containerResizeSpeed: 400,
