@@ -254,7 +254,7 @@
         if(settings.responsive)
           width = parent.width();
         if(width)
-          parent.find('.lightbox-image-prev').css('left', settings.hAlign == 'right' ? width-img.width() : (settings.hAlign == 'left' ? 0 : (width-img.width())/2));
+          parent.find('.lightbox-image-prev').css(getDir(), settings.hAlign == 'right' ? width-img.width() : (settings.hAlign == 'left' ? 0 : (width-img.width())/2));
         if(settings.fixedHeight)
           parent.find('.lightbox-image-prev').css('top', settings.vAlign == 'bottom' ? settings.fixedHeight-img.height() : (settings.vAlign == 'top' ? 0 : (settings.fixedHeight-img.height())/2));
         parent.find('.lightbox-container-image-prev').height(settings.fixedHeight ? settings.fixedHeight : img.height())
@@ -415,7 +415,7 @@
           left: (settings.direction == 'right' ? 1 : -1)*(settings.fixedWidth ? settings.fixedWidth : img.width())
         }, settings.effectSpeed, 'swing', function() {
           parent.find('.lightbox-container-image-prev').hide();
-          parent.find('.lightbox-container-image-prev').css('left', 0);
+          parent.find('.lightbox-container-image-prev').css(getDir(), 0);
         });
       }
       img.show();
@@ -605,9 +605,9 @@
     }
 
     function getDir() {
-      var dir_array = $("html, body").map(function(){return $(this).attr("dir").toLowerCase;}).get();
+      var dir_array = $("html, body").map(function(){return $(this).attr("dir").toLowerCase();}).get();
       var dir = 'left';
-      if ($.inArray('rtl', dir_array))
+      if ($.inArray('rtl', dir_array) != -1)
         dir = 'right';
       return dir;
     }
