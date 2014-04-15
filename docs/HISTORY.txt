@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0b19 (unreleased)
+1.0b19 (2014-04-15)
 -------------------
 
 * Image alignment is now ltr/rtl aware
