@@ -27,7 +27,8 @@
         window.clearInterval(this.obj.data('interval'));
       }
     }, {obj: $(this), callback: callback}), 50));
-  }
+  };
+
   /**
    * $ is an alias to jQuery object
    *
@@ -99,12 +100,10 @@
       preSetNavigation: false,
       postSetNavigation: false,
       prePreloadNeighbor: false,
-      postPreloadNeighbor: false,
-      prePreloadNeighbor: false,
       postPreloadNeighbor: false
     },settings);
     if(!this.length)
-      return
+      return;
     settings.matchedObjects = this;
     /**
      * Initializing the plugin calling the start function
@@ -114,7 +113,8 @@
     function _initialize(event) {
       event.preventDefault();
       _start(event.currentTarget, event.data.settings); // This, in this context, refer to object (link) which the user have clicked
-    };
+    }
+
     /**
      * Start the jQuery lightBox plugin
      *
@@ -140,12 +140,13 @@
         var a = $(settings.matchedObjects[i]);
         var img = a;
         var link = false;
+        var caption;
         if(settings.captionSelector)
           a = a.find(settings.captionSelector);
         if(settings.captionHTML)
-          var caption = a.html();
+          caption = a.html();
         else
-          var caption = a.attr(settings.captionAttr);
+          caption = a.attr(settings.captionAttr);
         if(settings.imageSelector)
           img = img.find(settings.imageSelector);
         if(settings.linkSelector)
@@ -163,7 +164,8 @@
       // Call the function that prepares image exibition
       _set_image_to_view(parent, settings);
       _callback(settings, 'postStart', {'objClicked': objClicked});
-    };
+    }
+
     /**
      * Create the jQuery lightBox plugin interface
      *
@@ -233,6 +235,7 @@
         _callback(settings, 'postSetInterface', {'parent': parent, 'objClicked': objClicked});
       }
     }
+
     /**
      * Prepares image exibition; doing a image´s preloader to calculate it´s size
      *
@@ -255,7 +258,7 @@
         if(settings.fixedHeight)
           parent.find('.lightbox-image-prev').css('top', settings.vAlign == 'bottom' ? settings.fixedHeight-img.height() : (settings.vAlign == 'top' ? 0 : (settings.fixedHeight-img.height())/2));
         parent.find('.lightbox-container-image-prev').height(settings.fixedHeight ? settings.fixedHeight : img.height())
-                                                     .width(width ? width : img.width())
+                                                     .width(width ? width : img.width());
         if(img.attr('src')) {
           parent.find('.lightbox-image-prev').loaded($.proxy(function() {
             this.parent.find('.lightbox-image').hide();
@@ -299,7 +302,8 @@
       };
       objImagePreloader.src = settings.imageArray[settings.activeImage][0];
       _callback(settings, 'postSetImageToView', {'parent': parent});
-    };
+    }
+
     /**
      * Perfomance an effect in the image container resizing it
      *
@@ -337,7 +341,8 @@
       } else
         _show_image(parent, settings);
       _callback(settings, 'postResizeContainer', {'parent': parent, 'intImageWidth': intImageWidth, 'intImageHeight': intImageHeight});
-    };
+    }
+
     /**
      * Show the prepared image
      *
@@ -361,11 +366,11 @@
       if(settings.matchedObjects.length > 1){
         if(settings.effect == 'slide') {
           $(img).loaded(function() {
-            _slide(img, parent, settings)
+            _slide(img, parent, settings);
           });
         } else {
           $(img).loaded(function() {
-            _fade(img, parent, settings)
+            _fade(img, parent, settings);
           });
         }
       } else {
@@ -374,7 +379,7 @@
           if(settings.responsive)
             width = parent.width();
           if(width)
-            img.css('left', settings.hAlign == 'right' ? width-img.width() : (settings.hAlign == 'left' ? 0 : (width-img.width())/2));
+            img.css(getDir(), settings.hAlign == 'right' ? width-img.width() : (settings.hAlign == 'left' ? 0 : (width-img.width())/2));
           if(settings.fixedHeight)
             img.css('top', settings.vAlign == 'bottom' ? settings.fixedHeight-img.height() : (settings.vAlign == 'top' ? 0 : (settings.fixedHeight-img.height())/2));
           img.show();
@@ -384,7 +389,7 @@
       }
       _preload_neighbor_images(settings);
       _callback(settings, 'postShowImage', {'parent': parent});
-    };
+    }
 
     function _fade(img, parent, settings) {
       if(!settings.showLoading)
@@ -395,14 +400,14 @@
       if(settings.responsive)
         width = parent.width();
       if(width)
-        img.css('left', settings.hAlign == 'right' ? width-img.width() : (settings.hAlign == 'left' ? 0 : (width-img.width())/2));
+        img.css(getDir(), settings.hAlign == 'right' ? width-img.width() : (settings.hAlign == 'left' ? 0 : (width-img.width())/2));
       if(settings.fixedHeight)
         img.css('top', settings.vAlign == 'bottom' ? settings.fixedHeight-img.height() : (settings.vAlign == 'top' ? 0 : (settings.fixedHeight-img.height())/2));
       img.fadeIn(settings.effectSpeed, function() {
         _show_image_data(parent,settings);
         _set_navigation(parent,settings);
       });
-    };
+    }
 
     function _slide(img, parent, settings) {
       if(!settings.showLoading) {
@@ -414,7 +419,7 @@
         });
       }
       img.show();
-      img.css('left', (settings.direction == 'right' ? -1 : 1)*(settings.fixedWidth ? settings.fixedWidth : img.width()));
+      img.css(getDir(), (settings.direction == 'right' ? -1 : 1)*(settings.fixedWidth ? settings.fixedWidth : img.width()));
       img.css('top', (settings.fixedHeight ? (settings.vAlign == 'bottom' ? settings.fixedHeight-img.height() : (settings.vAlign == 'top' ? 0 : (settings.fixedHeight-img.height())/2)) : 0));
       var width = settings.fixedWidth;
       if(settings.responsive)
@@ -426,10 +431,12 @@
           _show_image_data(parent,settings);
           _set_navigation(parent,settings);
       });
-    };
+    }
+
     function __goto(event) {
       window.location = event.data.url;
-    };
+    }
+
     /**
      * Show the image information
      *
@@ -464,6 +471,7 @@
       }
       _callback(settings, 'postShowImageData', {'parent': parent});
     }
+
     /**
      * Display the button navigations
      *
@@ -556,6 +564,7 @@
       }
       _callback(settings, 'postSetNavigation', {'parent': parent});
     }
+
     /**
      * Preload prev and next images being showed
      *
@@ -572,6 +581,7 @@
       }
       _callback(settings, 'postPreloadNeighbor');
     }
+
     /**
      * Handles callbacks
      *
@@ -582,6 +592,7 @@
       if(settings[name])
         settings[name](params);
     }
+
     /**
      * Stop the code execution from a escified time in milisecond
      *
@@ -591,7 +602,16 @@
       curDate = null;
       do { var curDate = new Date(); }
       while ( curDate - date < ms);
-    };
+    }
+
+    function getDir() {
+      var dir_array = $("html, body").map(function(){return $(this).attr("dir").toLowerCase;}).get();
+      var dir = 'left';
+      if ($.inArray('rtl', dir_array))
+        dir = 'right';
+      return dir;
+    }
+
     // Return the jQuery object for chaining. The unbind method is used to avoid click conflict when the plugin is called more than once
     this.unbind('click').bind('click', {settings: settings}, _initialize);
     if((settings.autoStart || settings.playTimeout) && !settings.started)
